@@ -12,7 +12,7 @@
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
 .appbar{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-.appbar .inner{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.appbar .inner{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{width:46px;height:46px;border-radius:13px;background:var(--green-l);display:grid;place-items:center;font-size:26px;flex:none;box-shadow:inset 0 0 0 1px rgba(47,125,58,.18)}
 .brand-txt h1{font-family:"Zen Maru Gothic",sans-serif;font-size:21px;margin:0;letter-spacing:.02em;color:var(--green-d)}
 .brand-txt .co{font-size:12px;color:var(--muted);margin-top:1px}
@@ -64,13 +64,20 @@ body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background
 .mobile-bar{display:none}
 @media(max-width:900px){.mobile-bar{display:flex;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;gap:12px;align-items:center;z-index:25}.mobile-bar .c{font-size:13px;color:var(--muted)}.mobile-bar .c b{color:var(--ink);font-size:16px}.mobile-bar .btn{width:auto;flex:1}}
 .foot{max-width:1180px;margin:0 auto;padding:6px 20px 30px;font-size:11.5px;color:var(--muted)}
+.saved-note{font-size:12px;color:var(--green-d);background:var(--green-l);border-radius:9px;padding:8px 11px;margin-top:8px}
+.hist-link{font-size:12.5px;font-weight:700;color:#fff;background:var(--green);border:none;border-radius:10px;padding:8px 13px;white-space:nowrap;cursor:pointer;flex:none}
+.hist-link:hover{background:var(--green-d)}
+.hist-item{border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fcfdfc}
+.hist-body{font-size:13px;color:#3a463f;margin:6px 0 10px;line-height:1.7}
+.btn.hsm{font-size:12.5px;padding:8px 12px;width:auto}
+#histList{max-height:54vh;overflow:auto;margin-bottom:6px}
 </style>
 </head>
 <body>
 <header class="appbar"><div class="inner">
   <div class="brand">🥬</div>
   <div class="brand-txt"><h1>やさい発注ボード</h1><div class="co">株式会社気持ち市場 ｜ ご注文フォーム</div></div>
-  <div class="today"><span>本日</span><b id="todayTxt">--</b></div><a class="admin-link" href="admin.html" title="管理者ログイン">🔒 管理</a>
+  <div class="today"><span>本日</span><b id="todayTxt">--</b></div><button class="hist-link" id="histBtn" type="button">📋 発注履歴</button><a class="admin-link" href="admin.html" title="管理者ログイン">🔒 管理</a>
 </div></header>
 <div class="wrap">
   <main>
@@ -104,8 +111,14 @@ body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background
 <div class="mobile-bar"><div class="c">選択 <b id="cntM">0</b> 品目</div><button class="btn" id="makeBtnM" disabled>発注内容を作成</button></div>
 <div class="foot">※ この画面はネット不要で動きます（入力は自動保存）。作成した発注内容はコピーしてLINE等で送れます。　<a href="admin.html" style="color:#7a857d">🔒 管理者ログイン</a></div>
 <div class="modal-bg" id="modalBg"><div class="modal">
-  <h2>📋 発注内容</h2><div class="msg" id="msg"></div>
+  <h2>📋 発注内容</h2><div class="msg" id="msg"></div><div class="saved-note">✅ 控えを保存しました。上部「📋 発注履歴」からいつでも確認できます。</div>
   <div class="btnbar"><button class="btn" id="copyBtn">この内容をコピー</button><button class="btn ghost" id="closeBtn" style="flex:none;width:96px">閉じる</button></div>
+</div></div>
+<div class="modal-bg" id="histBg"><div class="modal" style="max-width:520px">
+<h2>📋 あなたの発注履歴</h2>
+<p style="font-size:12.5px;color:var(--muted);margin:-6px 0 12px">この端末で発注した内容の控えです。タップで再コピーできます。</p>
+<div id="histList"></div>
+<div class="btnbar"><button class="btn ghost" id="histClose" type="button" style="flex:none;width:120px;margin-left:auto">閉じる</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
@@ -166,6 +179,10 @@ $("#copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(buildMsg
 let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1800)}
 $("#q").oninput=e=>{q=norm(e.target.value);render()};
 ["partner","contact","orderDate","deliveryDate","request","note"].forEach(k=>$("#"+k).addEventListener("input",save));
+function ordText(o){let t=`🥬 ご発注\n取引先：${o.partner||"-"}\n発注日：${o.orderDate||"-"}`;if(o.deliveryDate)t+=`\n入荷希望：${o.deliveryDate}`;t+="\n────────────\n"+o.items.map(it=>`・${it.n} ${it.q}${it.u}`).join("\n");if(o.request)t+=`\n────────────\nリクエスト：${o.request}`;if(o.note)t+=`\n備考：${o.note}`;return t}
+function renderHist(){const arr=JSON.parse(localStorage.getItem("yov2_orders")||"[]");const box=$("#histList");if(!arr.length){box.innerHTML='<div class="sum-empty">まだ発注はありません。<br>品目を選んで「発注内容を作成する」を押すと、ここに控えが残ります。</div>';return}box.innerHTML="";arr.forEach((o)=>{const d=new Date(o.ts);const items=o.items.map(it=>`${it.n} ${it.q}${it.u}`).join("、");const el=document.createElement("div");el.className="hist-item";el.innerHTML=`<div><b>${o.orderDate||"-"}</b> <span style="color:var(--muted);font-size:12px">（${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")} 作成）</span></div><div class="hist-body">${items}</div><button class="btn ghost hsm" type="button">📋 この内容をコピー</button>`;el.querySelector("button").onclick=async()=>{try{await navigator.clipboard.writeText(ordText(o));toast("コピーしました")}catch{toast("コピーできません")}};box.appendChild(el)})}
+$("#histBtn").onclick=()=>{renderHist();$("#histBg").classList.add("on")};
+$("#histClose").onclick=()=>$("#histBg").classList.remove("on");$("#histBg").onclick=e=>{if(e.target===$("#histBg"))$("#histBg").classList.remove("on")};
 render();updateSum();
 </script>
 </body>
