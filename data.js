@@ -1,6 +1,6 @@
 /* やさい発注ボード v2 — 共通カタログ（価格は持たない）。index.html / admin.html が共用。
    旬(pk)=安く出回る月(1-12)。管理画面の編集は localStorage("yov2_catalog") に保存。 */
-const DISCORD_WEBHOOK=""; /* ← Discord通知先のWebhook URLをここに入れる。空なら通知しない */
+const NOTIFY_URL=""; /* ← Discord通知の中継(GAS)URLをここに入れる。空なら通知しない */
 const CATS=[{k:"all",l:"すべて"},{k:"season",l:"🥗 今が旬"},{k:"leaf",l:"葉物・香味"},{k:"fruitveg",l:"果菜・実野菜"},{k:"root",l:"根菜・いも"},{k:"mushroom",l:"きのこ"},{k:"processed",l:"加工・その他"},{k:"citrus",l:"柑橘"},{k:"fruit",l:"果物"},{k:"seasonlim",l:"季節限定"}];
 const CAT_EDIT=[{k:"leaf",l:"葉物・香味"},{k:"fruitveg",l:"果菜・実野菜"},{k:"root",l:"根菜・いも"},{k:"mushroom",l:"きのこ"},{k:"processed",l:"加工・その他"},{k:"citrus",l:"柑橘"},{k:"fruit",l:"果物"},{k:"seasonlim",l:"季節限定"}];
 const CATLABEL=Object.fromEntries(CAT_EDIT.map(c=>[c.k,c.l]));

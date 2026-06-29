@@ -161,7 +161,7 @@ function updateSum(){const sel=selected(),n=sel.length;$("#cnt").textContent=n;$
 function buildMsg(){const i=grab(),sel=selected();let t=`🥬 ご発注\n取引先：${i.partner||"（未入力）"}\n発注日：${i.orderDate||"-"}`;if(i.deliveryDate)t+=`\n入荷希望：${i.deliveryDate}`;t+="\n────────────\n"+sel.map(p=>`・${p.n} ${st.qty[p.id]}${st.unit[p.id]||p.u[0]}`).join("\n");if(i.request)t+=`\n────────────\nリクエスト：${i.request}`;if(i.note)t+=`\n備考：${i.note}`;return t}
 function saveOrder(){const i=grab(),sel=selected();const o={partner:i.partner,contact:i.contact,orderDate:i.orderDate,deliveryDate:i.deliveryDate,items:sel.map(p=>({n:p.n,q:st.qty[p.id],u:st.unit[p.id]||p.u[0]})),request:i.request,note:i.note,ts:Date.now()};const arr=JSON.parse(localStorage.getItem("yov2_orders")||"[]");arr.unshift(o);localStorage.setItem("yov2_orders",JSON.stringify(arr));notifyDiscord(o)}
 function notifyDiscord(o){
-  if(typeof DISCORD_WEBHOOK!=="string"||!DISCORD_WEBHOOK)return;
+  if(typeof NOTIFY_URL!=="string"||!NOTIFY_URL)return;
   const items=o.items.map(it=>`・${it.n} ${it.q}${it.u}`).join("\n")||"-";
   const fields=[{name:"取引先",value:o.partner||"-",inline:true},{name:"発注日",value:o.orderDate||"-",inline:true}];
   if(o.deliveryDate)fields.push({name:"入荷希望",value:o.deliveryDate,inline:true});
@@ -170,7 +170,7 @@ function notifyDiscord(o){
   if(o.request)fields.push({name:"リクエスト",value:o.request});
   if(o.note)fields.push({name:"備考",value:o.note});
   const payload={username:"やさい発注ボード",embeds:[{title:"🥬 新しい発注が届きました",color:3111466,fields:fields,timestamp:new Date().toISOString(),footer:{text:"株式会社気持ち市場"}}]};
-  try{const fd=new FormData();fd.append("payload_json",JSON.stringify(payload));fetch(DISCORD_WEBHOOK,{method:"POST",body:fd}).catch(e=>console.error("discord notify failed",e));}catch(e){console.error(e);}
+  try{fetch(NOTIFY_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}).catch(e=>console.error("notify failed",e));}catch(e){console.error(e);}
 }
 function openModal(){if(!$("#partner").value.trim()){toast("店舗・会社名を入力してください");$("#partner").focus();return}saveOrder();$("#msg").textContent=buildMsg();$("#modalBg").classList.add("on")}
 $("#makeBtn").onclick=openModal;$("#makeBtnM").onclick=openModal;
