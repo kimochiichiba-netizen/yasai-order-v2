@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>やさい発注ボード｜管理画面</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%A7%BE%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#2f7d3a;--green-d:#1e5a28;--green-l:#e8f2e6;--accent:#e8852b;--accent-l:#fdf1e3;--ink:#23302a;--muted:#6d7a72;--line:#e2e9e2;--bg:#f3f6f1;--card:#fff;--shadow:0 1px 2px rgba(30,60,40,.05),0 6px 18px rgba(30,60,40,.06);}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+.appbar{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.appbar .inner{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{width:46px;height:46px;border-radius:13px;background:var(--green-l);display:grid;place-items:center;font-size:24px;flex:none;box-shadow:inset 0 0 0 1px rgba(47,125,58,.18)}
+.brand-txt h1{font-family:"Zen Maru Gothic",sans-serif;font-size:19px;margin:0;color:var(--green-d)}
+.brand-txt .co{font-size:12px;color:var(--muted);margin-top:1px}
+.nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.nav a,.nav button{font:inherit;font-size:13px;font-weight:700;text-decoration:none;color:#55635b;background:#f4f7f3;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.nav a.on{background:var(--green);color:#fff;border-color:var(--green)}
+.nav a.link{background:#fff}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.card h2{font-family:"Zen Maru Gothic",sans-serif;font-size:17px;margin:0 0 4px;color:var(--green-d)}
+.card .desc{font-size:13px;color:var(--muted);margin:0 0 16px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.toolbar input[type=search],.toolbar select{font:inherit;font-size:14px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fcfdfc}
+.toolbar .grow{flex:1;min-width:160px}
+.btn{font:inherit;font-weight:700;font-size:14px;border:none;border-radius:10px;padding:10px 15px;cursor:pointer;background:var(--green);color:#fff}
+.btn.sm{padding:7px 11px;font-size:13px}.btn.ghost{background:#fff;color:var(--green-d);border:1.5px solid var(--line)}.btn.warn{background:#fff;color:#b4502a;border:1.5px solid #e9cdbd}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:#5c6a62;background:#f6f9f5;position:sticky;top:0}
+tbody tr:hover{background:#fafcf9}
+.tbl-wrap{max-height:62vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.pill.cat{background:var(--green-l);color:var(--green-d)}
+.pill.season{background:var(--accent);color:#fff}
+.sw{position:relative;display:inline-block;width:42px;height:24px}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;background:#cdd6cf;border-radius:999px;transition:.15s;cursor:pointer}
+.sw span:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s}
+.sw input:checked+span{background:var(--green)}.sw input:checked+span:before{transform:translateX(18px)}
+.act{display:flex;gap:6px}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px}
+.modal-bg{position:fixed;inset:0;background:rgba(25,40,30,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:440px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal h3{font-family:"Zen Maru Gothic",sans-serif;color:var(--green-d);margin:0 0 14px;font-size:17px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field label{font-size:12.5px;font-weight:700;color:#46544c}
+.field input,.field select{font:inherit;font-size:14px;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:#fcfdfc}
+.share-url{font:inherit;font-size:14px;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;background:#fcfdfc}
+.btnbar{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
+.qr{text-align:center;margin-top:18px}
+.qr img{border:1px solid var(--line);border-radius:14px;padding:8px;background:#fff}
+.note{background:var(--accent-l);border:1px solid #f3d8b6;border-radius:10px;padding:10px 13px;font-size:12.5px;color:#92591d;margin-bottom:14px}
+.msg{background:#f5f8f3;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:13px;white-space:pre-wrap;max-height:46vh;overflow:auto;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#23302a;color:#fff;padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;opacity:0;transition:.25s;z-index:60}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="gate" style="position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,#eef5ec,#dfeede);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border:1px solid #e2e9e2;border-radius:20px;box-shadow:0 16px 50px rgba(30,60,40,.16);padding:32px 26px;max-width:340px;width:100%;text-align:center">
+    <div style="width:60px;height:60px;border-radius:16px;background:#e8f2e6;display:grid;place-items:center;font-size:30px;margin:0 auto 6px">🧾</div>
+    <h2 style="font-family:'Zen Maru Gothic',sans-serif;color:#1e5a28;margin:8px 0 2px;font-size:19px">管理画面ログイン</h2>
+    <p style="color:#6d7a72;font-size:12.5px;margin:0 0 18px">やさい発注ボード ／ 株式会社気持ち市場</p>
+    <input id="gatePass" type="password" placeholder="パスワード" autocomplete="current-password" style="font-family:inherit;font-size:16px;padding:12px 14px;border:1.5px solid #e2e9e2;border-radius:11px;width:100%;text-align:center;letter-spacing:.15em;background:#fcfdfc">
+    <div id="gateErr" style="color:#c0392b;font-size:12.5px;min-height:18px;margin:8px 0 2px"></div>
+    <button id="gateBtn" style="font-family:inherit;font-weight:700;font-size:15px;border:none;border-radius:12px;padding:13px;cursor:pointer;width:100%;background:#2f7d3a;color:#fff;box-shadow:0 4px 12px rgba(47,125,58,.25)">ログイン</button>
+    <p style="color:#9aa69e;font-size:11px;margin:12px 0 0">関係者以外はログインできません</p>
+  </div>
+</div>
+<script>
+const ADMIN_PASS="kimochi2026"; /* ← パスワードはこの1行を書き換えれば変更できます */
+(function(){var g=document.getElementById("gate");
+ if(sessionStorage.getItem("yov2_auth")==="1"){g.style.display="none";return}
+ var inp=document.getElementById("gatePass"),btn=document.getElementById("gateBtn"),err=document.getElementById("gateErr");
+ function go(){if(inp.value===ADMIN_PASS){sessionStorage.setItem("yov2_auth","1");g.style.display="none"}else{err.textContent="パスワードが違います";inp.value="";inp.focus()}}
+ btn.addEventListener("click",go);inp.addEventListener("keydown",function(e){if(e.key==="Enter")go()});setTimeout(function(){inp.focus()},100);})();
+</script>
+<header class="appbar"><div class="inner">
+  <div class="brand">🧾</div>
+  <div class="brand-txt"><h1>やさい発注ボード（管理）</h1><div class="co">株式会社気持ち市場 — 商品マスタ・注文確認・発注リンク共有</div></div>
+  <nav class="nav">
+    <a href="#orders" data-tab="orders">📥 注文一覧</a>
+    <a href="#master" data-tab="master">📦 商品マスタ</a>
+    <a href="#share" data-tab="share">📤 発注リンク共有</a>
+    <a href="index.html" target="_blank" class="link">🥬 発注画面を開く</a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+  <section id="tab-orders" class="tab">
+    <div class="card">
+      <h2>📥 届いた注文</h2>
+      <p class="desc">この端末で作成・受信した発注の一覧です。詳細を開いてコピーできます。</p>
+      <div id="ordersWrap"></div>
+    </div>
+  </section>
+
+  <section id="tab-master" class="tab" style="display:none">
+    <div class="card">
+      <h2>📦 商品マスタ</h2>
+      <p class="desc">発注画面に出す品目の管理。「表示」をオフにすると注文フォームから隠れます。「旬」は今月のカレンダー判定です（価格は扱いません）。</p>
+      <div class="toolbar">
+        <input type="search" id="mSearch" class="grow" placeholder="🔍 品目を検索">
+        <select id="mCat"></select>
+        <button class="btn sm" id="addBtn">＋ 商品を追加</button>
+        <button class="btn sm warn" id="resetBtn">初期状態に戻す</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>品目</th><th>カテゴリ</th><th>単位</th><th>旬(今月)</th><th>表示</th><th>操作</th></tr></thead>
+        <tbody id="mBody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-share" class="tab" style="display:none">
+    <div class="card" style="max-width:560px">
+      <h2>📤 発注リンクを共有</h2>
+      <p class="desc">このリンクを取引先（豊さん等）に渡すと、スマホ・PCから注文できます。</p>
+      <div class="note"><strong>※ この管理画面のURLは渡さないでください。</strong>渡すのは下の「発注画面」リンクだけです。</div>
+      <div class="field"><label>発注画面リンク（公開後のURL）</label><input id="shareUrl" class="share-url" placeholder="例：https://kimochiichiba-netizen.github.io/yasai-order-v2/"></div>
+      <div class="btnbar">
+        <button class="btn" id="shareBtn">📤 共有する</button>
+        <button class="btn ghost" id="copyUrlBtn">📋 コピー</button>
+      </div>
+      <div class="qr"><img id="qrImg" alt="発注リンクのQRコード" width="220" height="220"><p class="desc" style="margin-top:8px">スマホのカメラで読み取れます（印刷して店頭に置いてもOK）</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal-bg" id="editBg"><div class="modal">
+  <h3 id="editTitle">商品を編集</h3>
+  <div class="field"><label>品目名</label><input id="eName"></div>
+  <div class="field"><label>カテゴリ</label><select id="eCat"></select></div>
+  <div class="field"><label>単位（カンマ区切り・先頭が初期値）</label><input id="eUnits" placeholder="ケース,個"></div>
+  <div class="field"><label>旬の月（カンマ区切り・任意）</label><input id="ePk" placeholder="6,7,8"></div>
+  <div class="btnbar"><button class="btn" id="eSave">保存</button><button class="btn ghost" id="eCancel" style="flex:none">キャンセル</button></div>
+</div></div>
+
+<div class="modal-bg" id="ordBg"><div class="modal">
+  <h3 id="ordTitle">発注詳細</h3>
+  <div class="msg" id="ordMsg"></div>
+  <div class="btnbar"><button class="btn" id="ordCopy">コピー</button><button class="btn ghost" id="ordClose" style="flex:none">閉じる</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1800)}
+/* ---- タブ ---- */
+const tabs=["orders","master","share"];
+function setTab(t){if(!tabs.includes(t))t="orders";tabs.forEach(x=>$("#tab-"+x).style.display=x===t?"":"none");document.querySelectorAll(".nav a[data-tab]").forEach(a=>a.classList.toggle("on",a.dataset.tab===t));if(t==="orders")renderOrders();if(t==="master")renderMaster();if(t==="share")renderShare()}
+document.querySelectorAll(".nav a[data-tab]").forEach(a=>a.onclick=e=>{e.preventDefault();location.hash=a.dataset.tab;setTab(a.dataset.tab)});
+/* ---- 商品マスタ ---- */
+let CAT_FILTER="all",M_Q="";
+const mCatSel=$("#mCat");mCatSel.innerHTML='<option value="all">全カテゴリ</option>'+CAT_EDIT.map(c=>`<option value="${c.k}">${c.l}</option>`).join("");
+const eCatSel=$("#eCat");eCatSel.innerHTML=CAT_EDIT.map(c=>`<option value="${c.k}">${c.l}</option>`).join("");
+mCatSel.onchange=()=>{CAT_FILTER=mCatSel.value;renderMaster()};
+$("#mSearch").oninput=e=>{M_Q=norm(e.target.value);renderMaster()};
+function renderMaster(){
+  const cat=loadCatalog();const body=$("#mBody");body.innerHTML="";
+  let rows=cat.map((p,idx)=>({p,idx})).filter(({p})=>{if(CAT_FILTER!=="all"&&p.c!==CAT_FILTER)return false;if(M_Q&&!norm(p.n).includes(M_Q))return false;return true});
+  if(!rows.length){body.innerHTML='<tr><td colspan="6" class="empty">該当する品目がありません</td></tr>';return}
+  rows.forEach(({p,idx})=>{
+    const tr=document.createElement("tr");const isS=(p.pk||[]).includes(CUR_MON);
+    tr.innerHTML=`<td><b>${p.n}</b></td><td><span class="pill cat">${CATLABEL[p.c]||p.c}</span></td><td>${(p.u||[]).join("・")}</td>
+      <td>${isS?'<span class="pill season">旬</span>':'<span style="color:#b7c0b9">—</span>'}</td>
+      <td><label class="sw"><input type="checkbox" ${p.hidden?"":"checked"}><span></span></label></td>
+      <td><div class="act"><button class="btn sm ghost" data-e="${idx}">編集</button><button class="btn sm warn" data-d="${idx}">削除</button></div></td>`;
+    tr.querySelector("input").onchange=ev=>{const c=loadCatalog();c[idx].hidden=!ev.target.checked;saveCatalog(c);toast(ev.target.checked?"表示にしました":"非表示にしました")};
+    tr.querySelector("[data-e]").onclick=()=>openEdit(idx);
+    tr.querySelector("[data-d]").onclick=()=>{if(confirm(`「${p.n}」を削除しますか？`)){const c=loadCatalog();c.splice(idx,1);saveCatalog(c);renderMaster();toast("削除しました")}};
+    body.appendChild(tr);
+  });
+}
+let editIdx=-1;
+function openEdit(idx){editIdx=idx;const c=loadCatalog();const p=idx<0?{n:"",c:"leaf",u:["ケース"],pk:[]}:c[idx];
+  $("#editTitle").textContent=idx<0?"商品を追加":"商品を編集";$("#eName").value=p.n;$("#eCat").value=p.c;$("#eUnits").value=(p.u||[]).join(",");$("#ePk").value=(p.pk||[]).join(",");$("#editBg").classList.add("on")}
+$("#addBtn").onclick=()=>openEdit(-1);
+$("#eCancel").onclick=()=>$("#editBg").classList.remove("on");
+$("#editBg").onclick=e=>{if(e.target===$("#editBg"))$("#editBg").classList.remove("on")};
+$("#eSave").onclick=()=>{const n=$("#eName").value.trim();if(!n){toast("品目名を入力してください");return}
+  const obj={n,c:$("#eCat").value,u:$("#eUnits").value.split(",").map(s=>s.trim()).filter(Boolean),pk:$("#ePk").value.split(",").map(s=>+s.trim()).filter(x=>x>=1&&x<=12)};
+  if(!obj.u.length)obj.u=["ケース"];const c=loadCatalog();if(editIdx<0)c.push(obj);else c[editIdx]={...c[editIdx],...obj};saveCatalog(c);$("#editBg").classList.remove("on");renderMaster();toast("保存しました")};
+$("#resetBtn").onclick=()=>{if(confirm("商品マスタを初期状態（93品目）に戻しますか？編集内容は消えます。")){localStorage.removeItem("yov2_catalog");renderMaster();toast("初期状態に戻しました")}};
+/* ---- 注文一覧 ---- */
+function renderOrders(){
+  const arr=JSON.parse(localStorage.getItem("yov2_orders")||"[]");const w=$("#ordersWrap");
+  if(!arr.length){w.innerHTML='<div class="empty">まだ注文はありません。<br><span style="font-size:12.5px">発注画面で「発注内容を作成」すると、ここに届きます。</span></div>';return}
+  w.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>受信</th><th>取引先</th><th>発注日</th><th>入荷希望</th><th>品目数</th><th>操作</th></tr></thead><tbody></tbody></table></div>`;
+  const tb=w.querySelector("tbody");
+  arr.forEach((o,i)=>{const d=new Date(o.ts);const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}</td>
+      <td><b>${o.partner||"-"}</b></td><td>${o.orderDate||"-"}</td><td>${o.deliveryDate||"—"}</td><td>${o.items.length}品目</td>
+      <td><div class="act"><button class="btn sm ghost" data-v="${i}">詳細</button><button class="btn sm warn" data-x="${i}">削除</button></div></td>`;
+    tr.querySelector("[data-v]").onclick=()=>showOrder(o);
+    tr.querySelector("[data-x]").onclick=()=>{const a=JSON.parse(localStorage.getItem("yov2_orders")||"[]");a.splice(i,1);localStorage.setItem("yov2_orders",JSON.stringify(a));renderOrders();toast("削除しました")};
+    tb.appendChild(tr)});
+}
+function ordText(o){let t=`🥬 ご発注\n取引先：${o.partner||"-"}\n発注日：${o.orderDate||"-"}`;if(o.deliveryDate)t+=`\n入荷希望：${o.deliveryDate}`;t+="\n────────────\n"+o.items.map(it=>`・${it.n} ${it.q}${it.u}`).join("\n");if(o.request)t+=`\n────────────\nリクエスト：${o.request}`;if(o.note)t+=`\n備考：${o.note}`;return t}
+function showOrder(o){$("#ordTitle").textContent=(o.partner||"発注")+" の発注詳細";$("#ordMsg").textContent=ordText(o);$("#ordBg").classList.add("on");$("#ordCopy").onclick=async()=>{try{await navigator.clipboard.writeText(ordText(o));toast("コピーしました")}catch{toast("コピーできません")}}}
+$("#ordClose").onclick=()=>$("#ordBg").classList.remove("on");$("#ordBg").onclick=e=>{if(e.target===$("#ordBg"))$("#ordBg").classList.remove("on")};
+/* ---- 発注リンク共有 ---- */
+const SU=$("#shareUrl");SU.value=localStorage.getItem("yov2_shareurl")||"https://kimochiichiba-netizen.github.io/yasai-order-v2/";
+function renderShare(){updateQR()}
+function updateQR(){const u=SU.value.trim()||"https://example.com";$("#qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data="+encodeURIComponent(u)}
+SU.oninput=()=>{localStorage.setItem("yov2_shareurl",SU.value);updateQR()};
+$("#copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText(SU.value);toast("リンクをコピーしました")}catch{toast("コピーできません")}};
+$("#shareBtn").onclick=async()=>{const u=SU.value;const data={title:"やさい発注ボード",text:"こちらから野菜をご注文ください：",url:u};if(navigator.share){try{await navigator.share(data)}catch{}}else{try{await navigator.clipboard.writeText(u);toast("リンクをコピーしました（LINE等に貼り付け）")}catch{toast("コピーできません")}}};
+/* ---- 起動 ---- */
+setTab((location.hash||"#orders").slice(1));
+</script>
+</body>
+</html>
+

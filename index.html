@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>やさい発注ボード｜株式会社気持ち市場</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%A5%AC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#2f7d3a;--green-d:#1e5a28;--green-l:#e8f2e6;--accent:#e8852b;--accent-l:#fdf1e3;--ink:#23302a;--muted:#6d7a72;--line:#e2e9e2;--bg:#f3f6f1;--card:#fff;--shadow:0 1px 2px rgba(30,60,40,.05),0 6px 18px rgba(30,60,40,.06);}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+.appbar{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.appbar .inner{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.brand{width:46px;height:46px;border-radius:13px;background:var(--green-l);display:grid;place-items:center;font-size:26px;flex:none;box-shadow:inset 0 0 0 1px rgba(47,125,58,.18)}
+.brand-txt h1{font-family:"Zen Maru Gothic",sans-serif;font-size:21px;margin:0;letter-spacing:.02em;color:var(--green-d)}
+.brand-txt .co{font-size:12px;color:var(--muted);margin-top:1px}
+.appbar .today{margin-left:auto;text-align:right;font-size:12px;color:var(--muted)}.appbar .today b{display:block;font-size:15px;color:var(--ink)}
+.wrap{max-width:1180px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 332px;gap:20px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;padding:14px;gap:14px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:18px}
+@media(max-width:900px){.card{margin-bottom:14px}}
+.card h2{font-family:"Zen Maru Gothic",sans-serif;font-size:16px;margin:0 0 14px;color:var(--green-d);display:flex;align-items:center;gap:8px}
+.card h2 .ln{flex:1;height:1px;background:var(--line)}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.field:last-child{margin-bottom:0}
+.field label{font-size:12.5px;font-weight:700;color:#46544c}.field .req{color:#c0392b}
+.field input,.field textarea{font:inherit;font-size:14px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fcfdfc;width:100%}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--green);background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.search{position:relative;margin-bottom:12px}
+.search input{font-size:15px;padding:12px 14px 12px 40px;border:1.5px solid var(--line);border-radius:12px;width:100%;background:#fcfdfc}
+.search input:focus{outline:none;border-color:var(--green);background:#fff}
+.search .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.6}
+.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px}.chips::-webkit-scrollbar{height:0}
+.chip{flex:none;font:inherit;font-size:13px;font-weight:700;padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:#55635b;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--green);border-color:var(--green);color:#fff}.chip.season.on{background:var(--accent);border-color:var(--accent)}
+.season-banner{margin:12px 0 0;background:var(--accent-l);border:1px solid #f3d8b6;border-radius:12px;padding:10px 13px;font-size:13px;color:#92591d}.season-banner b{color:#b4661f}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:11px;margin-top:14px}
+.item{border:1.5px solid var(--line);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff}
+.item.has{border-color:var(--green);box-shadow:0 0 0 3px rgba(47,125,58,.08)}
+.item .nm{font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:40px}
+.item .badge{font-size:10px;font-weight:700;background:var(--accent);color:#fff;border-radius:5px;padding:1px 6px}
+.stepper{display:flex;align-items:center;gap:6px;margin-top:auto}
+.stepper .qbtn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);background:#f7faf6;font-size:19px;font-weight:700;color:var(--green-d);cursor:pointer;display:grid;place-items:center}
+.stepper input{width:44px;text-align:center;font:inherit;font-size:15px;font-weight:700;padding:7px 2px;border:1.5px solid var(--line);border-radius:8px}
+.stepper select{flex:1;font:inherit;font-size:12.5px;padding:7px 4px;border:1.5px solid var(--line);border-radius:8px;background:#fcfdfc;min-width:64px}
+.aside{position:sticky;top:84px}@media(max-width:900px){.aside{position:static}}
+.summary h2{font-family:"Zen Maru Gothic",sans-serif;font-size:16px;margin:0 0 4px;color:var(--green-d)}
+.sum-list{list-style:none;margin:10px 0;padding:0;max-height:46vh;overflow:auto}
+.sum-list li{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.sum-list .q{margin-left:auto;font-weight:700;color:var(--green-d);white-space:nowrap}.sum-list .x{color:#b94a3b;cursor:pointer;padding:2px 4px}
+.sum-empty{color:var(--muted);font-size:13px;text-align:center;padding:18px 0}
+.count{font-size:13px;color:var(--muted);margin:6px 0 12px}.count b{color:var(--ink);font-size:16px}
+.btn{font:inherit;font-weight:700;font-size:15px;border:none;border-radius:12px;padding:13px 18px;cursor:pointer;width:100%;background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(47,125,58,.25)}
+.btn:disabled{background:#b9c6bd;box-shadow:none;cursor:not-allowed}.btn.ghost{background:#fff;color:var(--green-d);border:1.5px solid var(--line);box-shadow:none}
+.modal-bg{position:fixed;inset:0;background:rgba(25,40,30,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal h2{font-family:"Zen Maru Gothic",sans-serif;color:var(--green-d);margin:0 0 12px;font-size:18px}
+.msg{background:#f5f8f3;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:13px;white-space:pre-wrap;max-height:48vh;overflow:auto}
+.btnbar{display:flex;gap:10px;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#23302a;color:#fff;padding:11px 20px;border-radius:999px;font-size:13.5px;font-weight:700;opacity:0;transition:.25s;z-index:60;pointer-events:none}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.mobile-bar{display:none}
+@media(max-width:900px){.mobile-bar{display:flex;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;gap:12px;align-items:center;z-index:25}.mobile-bar .c{font-size:13px;color:var(--muted)}.mobile-bar .c b{color:var(--ink);font-size:16px}.mobile-bar .btn{width:auto;flex:1}}
+.foot{max-width:1180px;margin:0 auto;padding:6px 20px 30px;font-size:11.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="appbar"><div class="inner">
+  <div class="brand">🥬</div>
+  <div class="brand-txt"><h1>やさい発注ボード</h1><div class="co">株式会社気持ち市場 ｜ ご注文フォーム</div></div>
+  <div class="today"><span>本日</span><b id="todayTxt">--</b></div>
+</div></header>
+<div class="wrap">
+  <main>
+    <div class="card"><h2>お客様情報 <span class="ln"></span></h2>
+      <div class="grid2">
+        <div class="field"><label>店舗・会社名 <span class="req">*</span></label><input id="partner" placeholder="例：第二食道園"></div>
+        <div class="field"><label>ご担当者・連絡先（任意）</label><input id="contact" placeholder="例：佐野 / 090-0000-0000"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>発注日</label><input id="orderDate" type="date"></div>
+        <div class="field"><label>入荷希望日（任意）</label><input id="deliveryDate" type="date"></div>
+      </div>
+    </div>
+    <div class="card"><h2>ご注文品目 <span class="ln"></span></h2>
+      <div class="search"><span class="ic">🔍</span><input id="q" type="search" placeholder="野菜・果物を検索（例：トマト、きのこ、みかん）" autocomplete="off"></div>
+      <div class="chips" id="chips"></div>
+      <div class="season-banner" id="seasonBanner"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="card">
+      <div class="field"><label>🥕 リクエスト（一覧に無い品目・ご要望／任意）</label><textarea id="request" rows="2" placeholder="例：地元の珍しい野菜があれば 等"></textarea></div>
+      <div class="field" style="margin-top:12px"><label>備考・連絡事項（任意）</label><textarea id="note" rows="2" placeholder="例：午前中に届けてほしい など"></textarea></div>
+    </div>
+  </main>
+  <aside class="aside"><div class="card summary">
+    <h2>🛒 ご注文内容</h2><div class="count">選択 <b id="cnt">0</b> 品目</div>
+    <ul class="sum-list" id="sumList"></ul>
+    <button class="btn" id="makeBtn" disabled>発注内容を作成する</button>
+  </div></aside>
+</div>
+<div class="mobile-bar"><div class="c">選択 <b id="cntM">0</b> 品目</div><button class="btn" id="makeBtnM" disabled>発注内容を作成</button></div>
+<div class="foot">※ この画面はネット不要で動きます（入力は自動保存）。作成した発注内容はコピーしてLINE等で送れます。　<a href="admin.html" style="color:#7a857d">🔒 管理者ログイン</a></div>
+<div class="modal-bg" id="modalBg"><div class="modal">
+  <h2>📋 発注内容</h2><div class="msg" id="msg"></div>
+  <div class="btnbar"><button class="btn" id="copyBtn">この内容をコピー</button><button class="btn ghost" id="closeBtn" style="flex:none;width:96px">閉じる</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script>
+const P=loadCatalog().filter(p=>!p.hidden);
+P.forEach((p,i)=>{p.id=i;p.season=p.pk.includes(CUR_MON);p.key=norm(p.n)});
+const $=s=>document.querySelector(s);
+const st=JSON.parse(localStorage.getItem("yov2_draft")||"{}");st.qty=st.qty||{};st.unit=st.unit||{};
+let cat="all",q="";
+const td=new Date();const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+$("#todayTxt").textContent=`${td.getMonth()+1}月${td.getDate()}日`;
+const info=st.info||{};["partner","contact","request","note"].forEach(k=>{if(info[k])$("#"+k).value=info[k]});
+$("#orderDate").value=info.orderDate||iso(td);$("#deliveryDate").value=info.deliveryDate||"";
+function grab(){return{partner:$("#partner").value,contact:$("#contact").value,orderDate:$("#orderDate").value,deliveryDate:$("#deliveryDate").value,request:$("#request").value,note:$("#note").value}}
+function save(){localStorage.setItem("yov2_draft",JSON.stringify({qty:st.qty,unit:st.unit,info:grab()}))}
+const chipBox=$("#chips");
+CATS.forEach(c=>{const b=document.createElement("button");b.className="chip"+(c.k==="season"?" season":"")+(c.k==="all"?" on":"");b.textContent=c.l;b.onclick=()=>{cat=c.k;[...chipBox.children].forEach(x=>x.classList.remove("on"));b.classList.add("on");render()};chipBox.appendChild(b)});
+const seas=P.filter(p=>p.season).slice(0,12).map(p=>p.n.replace(/（.*?）/g,""));
+$("#seasonBanner").innerHTML=`<b>今が旬（${CUR_MON}月）：</b>`+(seas.join("・")||"—")+" など";
+function render(){
+  const grid=$("#grid");grid.innerHTML="";
+  let list=P.filter(p=>{if(cat==="season")return p.season;if(cat!=="all"&&p.c!==cat)return false;if(q&&!p.key.includes(q))return false;return true});
+  if(!list.length){grid.innerHTML=`<div class="sum-empty" style="grid-column:1/-1">「${q}」は見つかりませんでした</div>`;return}
+  list.forEach(p=>{
+    const has=(st.qty[p.id]||0)>0;const el=document.createElement("div");el.className="item"+(has?" has":"");
+    const uns=p.u.map(u=>`<option ${(st.unit[p.id]||p.u[0])===u?"selected":""}>${u}</option>`).join("");
+    el.innerHTML=`<div class="nm">${p.n}${p.season?'<span class="badge">旬</span>':''}</div>
+      <div class="stepper"><button class="qbtn" data-m="-1">−</button><input type="number" min="0" value="${st.qty[p.id]||0}" inputmode="numeric"><button class="qbtn" data-m="1">+</button><select>${uns}</select></div>`;
+    const inp=el.querySelector("input"),sel=el.querySelector("select");
+    el.querySelectorAll(".qbtn").forEach(b=>b.onclick=()=>{let v=(+inp.value||0)+(+b.dataset.m);if(v<0)v=0;inp.value=v;setQ(p,v,el)});
+    inp.oninput=()=>setQ(p,Math.max(0,+inp.value||0),el);sel.onchange=()=>{st.unit[p.id]=sel.value;save()};
+    grid.appendChild(el);
+  });
+}
+function setQ(p,v,el){st.qty[p.id]=v;el.classList.toggle("has",v>0);save();updateSum()}
+function selected(){return P.filter(p=>(st.qty[p.id]||0)>0)}
+function updateSum(){const sel=selected(),n=sel.length;$("#cnt").textContent=n;$("#cntM").textContent=n;$("#makeBtn").disabled=!n;$("#makeBtnM").disabled=!n;
+  const ul=$("#sumList");if(!n){ul.innerHTML='<div class="sum-empty">品目の数量を入れると<br>ここに表示されます</div>';return}
+  ul.innerHTML="";sel.forEach(p=>{const li=document.createElement("li");li.innerHTML=`<span>${p.n}</span><span class="q">${st.qty[p.id]}${st.unit[p.id]||p.u[0]}</span><span class="x">✕</span>`;li.querySelector(".x").onclick=()=>{st.qty[p.id]=0;save();render();updateSum()};ul.appendChild(li)})}
+function buildMsg(){const i=grab(),sel=selected();let t=`🥬 ご発注\n取引先：${i.partner||"（未入力）"}\n発注日：${i.orderDate||"-"}`;if(i.deliveryDate)t+=`\n入荷希望：${i.deliveryDate}`;t+="\n────────────\n"+sel.map(p=>`・${p.n} ${st.qty[p.id]}${st.unit[p.id]||p.u[0]}`).join("\n");if(i.request)t+=`\n────────────\nリクエスト：${i.request}`;if(i.note)t+=`\n備考：${i.note}`;return t}
+function saveOrder(){const i=grab(),sel=selected();const o={partner:i.partner,contact:i.contact,orderDate:i.orderDate,deliveryDate:i.deliveryDate,items:sel.map(p=>({n:p.n,q:st.qty[p.id],u:st.unit[p.id]||p.u[0]})),request:i.request,note:i.note,ts:Date.now()};const arr=JSON.parse(localStorage.getItem("yov2_orders")||"[]");arr.unshift(o);localStorage.setItem("yov2_orders",JSON.stringify(arr))}
+function openModal(){if(!$("#partner").value.trim()){toast("店舗・会社名を入力してください");$("#partner").focus();return}saveOrder();$("#msg").textContent=buildMsg();$("#modalBg").classList.add("on")}
+$("#makeBtn").onclick=openModal;$("#makeBtnM").onclick=openModal;
+$("#closeBtn").onclick=()=>$("#modalBg").classList.remove("on");$("#modalBg").onclick=e=>{if(e.target===$("#modalBg"))$("#modalBg").classList.remove("on")};
+$("#copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(buildMsg());toast("コピーしました")}catch{toast("コピーできませんでした")}};
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1800)}
+$("#q").oninput=e=>{q=norm(e.target.value);render()};
+["partner","contact","orderDate","deliveryDate","request","note"].forEach(k=>$("#"+k).addEventListener("input",save));
+render();updateSum();
+</script>
+</body>
+</html>
+
